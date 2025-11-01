@@ -4,10 +4,25 @@ const state = {
   fixtures: [],
   updates: [],
   lineup: { formation: '4-3-3', slots: [] },
-  useMockData: true // Set to false when backend is ready
+  useMockData: true // Default (will be auto-detected below)
 };
 
+// Auto-detect mock mode: when running locally without an API base, use mock data.
+(function(){
+  try {
+    const isLocal = ['localhost','127.0.0.1'].includes(location.hostname);
+    const hasAPIBase = typeof window !== 'undefined' && !!window.API_BASE;
+    state.useMockData = isLocal && !hasAPIBase;
+    // Helpful debug log for deployment
+    console.info('NALLS: useMockData=', state.useMockData, 'API_BASE=', window.API_BASE || '(none)', 'host=', location.hostname);
+  } catch (e) {
+    state.useMockData = true;
+  }
+})();
+
 // Mock data
+// Ensure API base defaults to same origin if not set (so fetch('/api/...') works)
+if (typeof window !== 'undefined' && !window.API_BASE) window.API_BASE = '';
 const mockPlayers = [
   // Goalkeeper
   { _id: 'p1', name: 'Placeholder GK', number: 1, position: 'GK', photoUrl: '', isCoach: false, stats: { goals: 0, assists: 0, appearances: 0, yellowCards: 0, redCards: 0 } },

@@ -36,7 +36,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // ===== Environment Variables =====
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/footballclub';
+// Support both MONGODB_URI and MONGO_URI env names
+const MONGO_URI = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/footballclub';
 const PORT = process.env.PORT || 4000;
 
 // ===== Routes =====
