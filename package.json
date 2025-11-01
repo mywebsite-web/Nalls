@@ -1,0 +1,14 @@
+{
+  "name": "nalls-fc",
+  "version": "1.0.0",
+  "description": "NALLS Football Club Website",
+  "scripts": {
+    "start": "cd backend && node server.js",
+    "dev": "cd backend && nodemon server.js",
+    "build": "echo 'No build step needed for static files'",
+    "install-deps": "npm install && cd backend && npm install"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
