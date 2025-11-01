@@ -26,9 +26,12 @@ app.use(morgan('dev'));
 
 // ===== Serve Frontend in Production =====
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '..', 'frontend'))); // adjust path if needed
+  // Since index.html is in the root folder
+  const frontendPath = path.join(__dirname, '../');
+  app.use(express.static(frontendPath));
+
   app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '..', 'frontend', 'index.html'));
+    res.sendFile(path.join(frontendPath, 'index.html'));
   });
 }
 
@@ -37,7 +40,7 @@ const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/footballcl
 const PORT = process.env.PORT || 4000;
 
 // ===== Routes =====
-app.get('/', (req, res) => {
+app.get('/api', (req, res) => {
   res.json({ status: 'ok', service: 'School Football Club API' });
 });
 
@@ -57,10 +60,7 @@ app.use((err, req, res, next) => {
 // ===== Start Server =====
 async function start() {
   try {
-    await mongoose.connect(MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(MONGO_URI);
     console.log('✅ Connected to MongoDB');
 
     app.listen(PORT, () => {
