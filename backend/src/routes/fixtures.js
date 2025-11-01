@@ -48,7 +48,7 @@ router.post('/', requireAuth, async (req, res) => {
 router.put('/:id', requireAuth, async (req, res) => {
   try {
     const { score, lineup, stats, ...update } = req.body;
-    
+
     // If score is being updated, parse and update stats
     if (score) {
       const [home, away] = score.split('-').map(n => parseInt(n, 10));
@@ -58,7 +58,22 @@ router.put('/:id', requireAuth, async (req, res) => {
         awayScore: away || 0
       };
     }
+
+    // Update the fixture in the database (example: MongoDB)
+    const fixture = await Fixture.findByIdAndUpdate(req.params.id, update, { new: true });
+
+    if (!fixture) {
+      return res.status(404).json({ message: 'Fixture not found' });
+    }
+
+    res.status(200).json(fixture);
+
+  } catch (error) {
+    console.error('Error updating fixture:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
 });
+
 
 router.delete('/:id', requireAuth, async (req, res) => {
   const deleted = await Fixture.findByIdAndDelete(req.params.id);
